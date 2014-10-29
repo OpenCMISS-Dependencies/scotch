@@ -1,2 +1,7 @@
 build/
 .svn
+include/
+src/libscotch/parser_ll.c
+src/libscotch/parser_ly.h
+src/libscotch/parser_yy.c
+.gitignore~
