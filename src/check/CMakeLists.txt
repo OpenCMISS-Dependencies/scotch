@@ -60,23 +60,24 @@ add_test(NAME check_prog_gpart_remap
     COMMAND gpart 32 bump_imbal_32.grf /dev/null -robump_old.map -vmt
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)    
 
-
 # PT-Scotch tests
-add_executable(test_strat_par test_strat_par.c)
-target_link_libraries(test_strat_par ptscotch)
-add_test(NAME test_strat_par 
-    COMMAND ${MPIEXEC} -n 4 $<TARGET_FILE:test_strat_par>)
-
-# The following binaries build in debug/interactive mode, so automated testing is not possible
-# straightaway.
-# Will build them anyways to have at least that tested
-add_executable(test_scotch_dgraph_check test_scotch_dgraph_check.c)
-target_link_libraries(test_scotch_dgraph_check ptscotch)
-add_executable(test_scotch_dgraph_band test_scotch_dgraph_band.c)
-target_link_libraries(test_scotch_dgraph_band ptscotch)
-add_executable(test_scotch_dgraph_coarsen test_scotch_dgraph_coarsen.c)
-target_link_libraries(test_scotch_dgraph_coarsen ptscotch)
-add_executable(test_scotch_dgraph_grow test_scotch_dgraph_grow.c)
-target_link_libraries(test_scotch_dgraph_grow ptscotch)
-add_executable(test_scotch_dgraph_redist test_scotch_dgraph_redist.c)
-target_link_libraries(test_scotch_dgraph_redist ptscotch)
+if (BUILD_PTSCOTCH)
+    add_executable(test_strat_par test_strat_par.c)
+    target_link_libraries(test_strat_par ptscotch)
+    add_test(NAME test_strat_par 
+        COMMAND ${MPIEXEC} -n 4 $<TARGET_FILE:test_strat_par>)
+    
+    # The following binaries build in debug/interactive mode, so automated testing is not possible
+    # straightaway.
+    # Will build them anyways to have at least that tested
+    add_executable(test_scotch_dgraph_check test_scotch_dgraph_check.c)
+    target_link_libraries(test_scotch_dgraph_check ptscotch)
+    add_executable(test_scotch_dgraph_band test_scotch_dgraph_band.c)
+    target_link_libraries(test_scotch_dgraph_band ptscotch)
+    add_executable(test_scotch_dgraph_coarsen test_scotch_dgraph_coarsen.c)
+    target_link_libraries(test_scotch_dgraph_coarsen ptscotch)
+    add_executable(test_scotch_dgraph_grow test_scotch_dgraph_grow.c)
+    target_link_libraries(test_scotch_dgraph_grow ptscotch)
+    add_executable(test_scotch_dgraph_redist test_scotch_dgraph_redist.c)
+    target_link_libraries(test_scotch_dgraph_redist ptscotch)
+endif()

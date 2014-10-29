@@ -234,6 +234,7 @@ wgraph_part_zr.c
 wgraph_store.c)
 
 add_library(scotch STATIC ${SCOTCH_SRC} library_error.c library_error_exit.c)
+set_target_properties(scotch PROPERTIES OUTPUT_NAME scotch-${SCOTCH_VERSION})
 add_dependencies(scotch scotch_header)
 if (UNIX)
     target_link_libraries(scotch PUBLIC rt m)
@@ -253,4 +254,6 @@ export(TARGETS scotch FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/scotch-${SCOTCH
 WRITE_BASIC_PACKAGE_VERSION_FILE(${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/scotch-${SCOTCH_VERSION}/scotch-config-version.cmake
     VERSION ${SCOTCH_VERSION} COMPATIBILITY AnyNewerVersion)
 
-add_subdirectory(libptscotch)
+if (BUILD_PTSCOTCH)
+    add_subdirectory(libptscotch)
+endif()

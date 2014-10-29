@@ -142,6 +142,7 @@ vdgraph_store.c
 ADD_PREFIX(../ PTSCOTCH_SRC)
     
 add_library(ptscotch STATIC ${PTSCOTCH_SRC} ../library_error.c ../library_error_exit.c)
+set_target_properties(ptscotch PROPERTIES OUTPUT_NAME ptscotch-${PTSCOTCH_VERSION})
 add_dependencies(ptscotch ptscotch_header)
 target_compile_definitions(ptscotch PRIVATE SCOTCH_PTSCOTCH)
 target_link_libraries(ptscotch PUBLIC scotch ${MPI_C_LIBRARIES})

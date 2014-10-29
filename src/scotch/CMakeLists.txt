@@ -38,4 +38,6 @@ ADD_EXEC(mmk_m3)
 ADD_EXEC(mord)
 ADD_EXEC(mtst)
 
-add_subdirectory(ptscotch)
+if (BUILD_PTSCOTCH)
+    add_subdirectory(ptscotch)
+endif()
