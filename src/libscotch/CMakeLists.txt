@@ -247,12 +247,17 @@ if (USE_PTHREAD)
     target_compile_definitions(scotch PRIVATE SCOTCH_PTHREAD)
 endif()
 target_include_directories(scotch
-    PUBLIC ${SCOTCH_INC_DIR}
+    PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>
     PRIVATE .)
 
-export(TARGETS scotch FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/scotch-${SCOTCH_VERSION}/scotch-config.cmake)
-WRITE_BASIC_PACKAGE_VERSION_FILE(${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/scotch-${SCOTCH_VERSION}/scotch-config-version.cmake
-    VERSION ${SCOTCH_VERSION} COMPATIBILITY AnyNewerVersion)
+install(TARGETS scotch EXPORT scotch-config
+    DESTINATION lib
+    INCLUDES DESTINATION include
+)
+install(DIRECTORY ../include/ DESTINATION include
+    FILES_MATCHING PATTERN "*.h")
+install(EXPORT scotch-config DESTINATION lib/cmake)
+WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/scotch-config-version.cmake COMPATIBILITY AnyNewerVersion)
 
 if (BUILD_PTSCOTCH)
     add_subdirectory(libptscotch)

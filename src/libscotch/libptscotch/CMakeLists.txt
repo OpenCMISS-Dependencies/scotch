@@ -156,9 +156,13 @@ if (USE_PTHREAD)
     target_link_libraries(ptscotch PUBLIC pthread)
 endif()
 target_include_directories(ptscotch
-    PUBLIC ${SCOTCH_INC_DIR} ${MPI_C_INCLUDE_PATH}
+    PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}> $<BUILD_INTERFACE:${MPI_C_INCLUDE_PATH}>
     PRIVATE .)
     
-export(TARGETS ptscotch scotch FILE ${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/ptscotch-${PTSCOTCH_VERSION}/ptscotch-config.cmake)
-WRITE_BASIC_PACKAGE_VERSION_FILE(${OPENCMISS_DEPENDENCIES_CONFIGS_DIR}/ptscotch-${PTSCOTCH_VERSION}/ptscotch-config-version.cmake
-    VERSION ${PTSCOTCH_VERSION} COMPATIBILITY AnyNewerVersion)
+install(TARGETS ptscotch EXPORT ptscotch-config
+    DESTINATION lib
+    INCLUDES DESTINATION include)
+install(EXPORT ptscotch-config DESTINATION lib/cmake)
+WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-version.cmake
+    COMPATIBILITY AnyNewerVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-version.cmake DESTINATION lib/cmake)
