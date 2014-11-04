@@ -254,8 +254,6 @@ install(TARGETS scotch EXPORT scotch-config
     DESTINATION lib
     INCLUDES DESTINATION include
 )
-install(DIRECTORY ../include/ DESTINATION include
-    FILES_MATCHING PATTERN "*.h")
 install(EXPORT scotch-config DESTINATION lib/cmake)
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/scotch-config-version.cmake COMPATIBILITY AnyNewerVersion)
 
