@@ -1,11 +1,3 @@
-MACRO(ADDTEST NAME BINARY INFILE)
-    add_test(${NAME} ${CMAKE_COMMAND}
-            #-DCMD=$<TARGET_FILE:${BINARY}>
-            -DCMD=${CMAKE_CURRENT_BINARY_DIR}/${BINARY}
-            -DINFILE=${CMAKE_CURRENT_SOURCE_DIR}/data/${INFILE}
-            -P ${SCOTCH_SOURCE_DIR}/testhelper.cmake)
-ENDMACRO()
-
 # Scotch tests
 if (USE_PTHREAD)
     add_executable(test_common_thread test_common_thread.c)
