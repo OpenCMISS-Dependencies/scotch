@@ -254,6 +254,10 @@ install(TARGETS scotch EXPORT scotch-config
     DESTINATION lib
     INCLUDES DESTINATION include
 )
+install(TARGETS scotch EXPORT ptscotch-config
+    DESTINATION lib
+    INCLUDES DESTINATION include
+)
 install(EXPORT scotch-config DESTINATION lib/cmake)
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/scotch-config-version.cmake COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/scotch-config-version.cmake DESTINATION lib/cmake)
