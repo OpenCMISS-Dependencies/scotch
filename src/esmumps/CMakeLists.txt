@@ -19,3 +19,6 @@ install(TARGETS esmumps EXPORT ptscotch-config
 if (BUILD_PTSCOTCH)
     add_subdirectory(ptesmumps)
 endif()
+
+add_executable(exesmumps main_esmumps.c)
+target_link_libraries(exesmumps esmumps scotch)

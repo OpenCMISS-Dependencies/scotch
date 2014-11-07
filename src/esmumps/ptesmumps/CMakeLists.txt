@@ -18,3 +18,7 @@ install(TARGETS ptesmumps EXPORT ptscotch-config
     DESTINATION lib
     INCLUDES DESTINATION include
 )
+
+add_executable(exptesmumps ../main_esmumps.c)
+target_link_libraries(exptesmumps ptesmumps ptscotch)
+target_compile_definitions(exptesmumps PRIVATE SCOTCH_PTSCOTCH)
