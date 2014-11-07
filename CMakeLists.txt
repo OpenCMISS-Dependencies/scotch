@@ -57,6 +57,7 @@ endif()
 
 set(SCOTCH_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+add_subdirectory(src/esmumps)
 add_subdirectory(src/libscotch)
 add_subdirectory(src/scotch)
 install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
