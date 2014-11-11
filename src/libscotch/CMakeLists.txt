@@ -246,9 +246,9 @@ if (USE_PTHREAD)
     target_link_libraries(scotch PUBLIC pthread)
     target_compile_definitions(scotch PRIVATE SCOTCH_PTHREAD)
 endif()
-target_include_directories(scotch
+target_include_directories(scotch PRIVATE .
     PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>
-    PRIVATE .)
+)
 
 install(TARGETS scotch EXPORT scotch-config
     DESTINATION lib
