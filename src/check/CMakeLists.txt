@@ -1,3 +1,6 @@
+SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
+
 # Scotch tests
 if (USE_PTHREAD)
     add_executable(test_common_thread test_common_thread.c)

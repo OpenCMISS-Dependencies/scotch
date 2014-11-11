@@ -156,7 +156,7 @@ if (USE_PTHREAD)
     target_link_libraries(ptscotch PUBLIC pthread)
 endif()
 target_include_directories(ptscotch PRIVATE ..
-    PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}> $<BUILD_INTERFACE:${MPI_C_INCLUDE_PATH}>
+    PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>
 )
     
 install(TARGETS ptscotch EXPORT ptscotch-config
