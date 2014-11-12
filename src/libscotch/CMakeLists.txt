@@ -1,37 +1,39 @@
-## dummysizes
-add_executable(dummysizes dummysizes.c)
-target_include_directories(dummysizes 
-    PRIVATE .)
-target_compile_definitions(dummysizes
-    PRIVATE SCOTCH_VERSION=${SCOTCH_VERSION_MAJOR}
-    SCOTCH_RELEASE=${SCOTCH_VERSION_MINOR}
-    SCOTCH_PATCHLEVEL=${SCOTCH_VERSION_PATCH}
-)
-add_custom_target(scotch_header
-    COMMAND dummysizes 
-    ${CMAKE_CURRENT_SOURCE_DIR}/library.h scotch.h
-    COMMAND ${CMAKE_COMMAND} -E copy scotch.h ${SCOTCH_INC_DIR}
-    COMMAND dummysizes 
-    ${CMAKE_CURRENT_SOURCE_DIR}/library_f.h scotchf.h
-    COMMAND ${CMAKE_COMMAND} -E copy scotchf.h ${SCOTCH_INC_DIR})
+if (NEED_HEADER_CREATION)
+    ## dummysizes
+    add_executable(dummysizes dummysizes.c)
+    target_include_directories(dummysizes 
+        PRIVATE .)
+    target_compile_definitions(dummysizes
+        PRIVATE SCOTCH_VERSION=${SCOTCH_VERSION_MAJOR}
+        SCOTCH_RELEASE=${SCOTCH_VERSION_MINOR}
+        SCOTCH_PATCHLEVEL=${SCOTCH_VERSION_PATCH}
+    )
+    add_custom_target(scotch_header
+        COMMAND dummysizes 
+        ${CMAKE_CURRENT_SOURCE_DIR}/library.h scotch.h
+        COMMAND ${CMAKE_COMMAND} -E copy scotch.h ${SCOTCH_INC_DIR}
+        COMMAND dummysizes 
+        ${CMAKE_CURRENT_SOURCE_DIR}/library_f.h scotchf.h
+        COMMAND ${CMAKE_COMMAND} -E copy scotchf.h ${SCOTCH_INC_DIR})
 
-## parser stuff
-execute_process(COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
-    COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
-)
-# For whatever reason: the commands fail if within the same execute_process..
-execute_process(#COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_BINARY_DIR}/parser_ll.c 
-        ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.c
-    #COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-        ${CMAKE_BINARY_DIR}/y.tab.c 
-        ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.c
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-        ${CMAKE_BINARY_DIR}/y.tab.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/parser_ly.h
-)
+    ## parser stuff
+    execute_process(COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
+        COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
+    )
+    # For whatever reason: the commands fail if within the same execute_process..
+    execute_process(#COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_BINARY_DIR}/parser_ll.c 
+            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.c
+        #COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+            ${CMAKE_BINARY_DIR}/y.tab.c 
+            ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.c
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+            ${CMAKE_BINARY_DIR}/y.tab.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ly.h
+    )
+endif()
 
 SET(SCOTCH_SRC arch.c
 arch_build.c
@@ -235,7 +237,9 @@ wgraph_store.c)
 
 add_library(scotch STATIC ${SCOTCH_SRC} library_error.c library_error_exit.c)
 set_target_properties(scotch PROPERTIES OUTPUT_NAME scotch-${SCOTCH_VERSION})
-add_dependencies(scotch scotch_header)
+if (NEED_HEADER_CREATION)
+    add_dependencies(scotch scotch_header)
+endif()
 if (UNIX)
     target_link_libraries(scotch PUBLIC rt m)
 endif()

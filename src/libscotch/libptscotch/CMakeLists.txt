@@ -3,22 +3,24 @@ project(PTSCOTCH VERSION ${SCOTCH_VERSION} LANGUAGES C)
 SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
 
-## ptdummysizes
-add_executable(ptdummysizes ../dummysizes.c)
-target_include_directories(ptdummysizes 
-    PRIVATE .)
-target_compile_definitions(ptdummysizes
-    PRIVATE SCOTCH_VERSION=${SCOTCH_VERSION_MAJOR}
-    SCOTCH_RELEASE=${SCOTCH_VERSION_MINOR}
-    SCOTCH_PATCHLEVEL=${SCOTCH_VERSION_PATCH}
-)
-add_custom_target(ptscotch_header
-    COMMAND ptdummysizes 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../library_pt.h ptscotch.h
-    COMMAND ${CMAKE_COMMAND} -E copy ptscotch.h ${SCOTCH_INC_DIR}
-    COMMAND ptdummysizes 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../library_pt_f.h ptscotchf.h
-    COMMAND ${CMAKE_COMMAND} -E copy ptscotchf.h ${SCOTCH_INC_DIR})
+if (NEED_HEADER_CREATION)
+    ## ptdummysizes
+    add_executable(ptdummysizes ../dummysizes.c)
+    target_include_directories(ptdummysizes 
+        PRIVATE .)
+    target_compile_definitions(ptdummysizes
+        PRIVATE SCOTCH_VERSION=${SCOTCH_VERSION_MAJOR}
+        SCOTCH_RELEASE=${SCOTCH_VERSION_MINOR}
+        SCOTCH_PATCHLEVEL=${SCOTCH_VERSION_PATCH}
+    )
+    add_custom_target(ptscotch_header
+        COMMAND ptdummysizes 
+        ${CMAKE_CURRENT_SOURCE_DIR}/../library_pt.h ptscotch.h
+        COMMAND ${CMAKE_COMMAND} -E copy ptscotch.h ${SCOTCH_INC_DIR}
+        COMMAND ptdummysizes 
+        ${CMAKE_CURRENT_SOURCE_DIR}/../library_pt_f.h ptscotchf.h
+        COMMAND ${CMAKE_COMMAND} -E copy ptscotchf.h ${SCOTCH_INC_DIR})    
+endif()
 
 SET(PTSCOTCH_SRC bdgraph.c
 bdgraph_bipart_bd.c
@@ -143,7 +145,9 @@ ADD_PREFIX(../ PTSCOTCH_SRC)
     
 add_library(ptscotch STATIC ${PTSCOTCH_SRC} ../library_error.c ../library_error_exit.c)
 set_target_properties(ptscotch PROPERTIES OUTPUT_NAME ptscotch-${PTSCOTCH_VERSION})
-add_dependencies(ptscotch ptscotch_header)
+if (NEED_HEADER_CREATION)
+    add_dependencies(ptscotch ptscotch_header)
+endif()
 target_compile_definitions(ptscotch PRIVATE SCOTCH_PTSCOTCH)
 target_link_libraries(ptscotch PUBLIC scotch ${MPI_C_LIBRARIES})
 if (UNIX)

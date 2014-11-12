@@ -56,6 +56,9 @@ if (USE_LZMA)
 endif()
 
 set(SCOTCH_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if (NOT EXISTS ${SCOTCH_INC_DIR}/scotch.h)
+    SET(NEED_HEADER_CREATION YES)
+endif()
 
 add_subdirectory(src/esmumps)
 add_subdirectory(src/libscotch)
