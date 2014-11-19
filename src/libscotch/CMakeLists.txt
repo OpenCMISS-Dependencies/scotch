@@ -11,28 +11,66 @@ if (NEED_HEADER_CREATION)
     add_custom_target(scotch_header
         COMMAND dummysizes 
         ${CMAKE_CURRENT_SOURCE_DIR}/library.h scotch.h
-        COMMAND ${CMAKE_COMMAND} -E copy scotch.h ${SCOTCH_INC_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different scotch.h ${SCOTCH_INC_DIR}
         COMMAND dummysizes 
         ${CMAKE_CURRENT_SOURCE_DIR}/library_f.h scotchf.h
-        COMMAND ${CMAKE_COMMAND} -E copy scotchf.h ${SCOTCH_INC_DIR})
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different scotchf.h ${SCOTCH_INC_DIR})
 
     ## parser stuff
-    execute_process(COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
-        COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
-    )
+    FIND_PACKAGE(FLEX QUIET)
+    SET(parser_ll ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.c)
+    IF(FLEX_FOUND)
+        ADD_CUSTOM_COMMAND(
+          OUTPUT ${parser_ll}
+          COMMAND ${FLEX_EXECUTABLE} -Pscotchyy --outfile=parser_ll.c
+              ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
+          COMMAND ${CMAKE_COMMAND} -E copy_if_different parser_ll.c ${parser_ll}
+          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+          COMMENT "Flexing parser_ll.c"
+        )
+    ELSE()
+        message(WARNING "No flex generator found. Using last-resort version.")
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/last_resort/parser_ll.c
+            ${parser_ll} COPYONLY)
+    ENDIF()
+    
+    FIND_PACKAGE(BISON QUIET)
+    SET(parser_yy ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.c)
+    SET(parser_ly ${CMAKE_CURRENT_SOURCE_DIR}/parser_ly.h)
+    IF(BISON_FOUND)
+        ADD_CUSTOM_COMMAND(
+          OUTPUT ${parser_yy} ${parser_ly}
+          COMMAND ${BISON_EXECUTABLE} -pscotchyy -y -b y -d -v
+              ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
+          COMMAND ${CMAKE_COMMAND} -E copy_if_different y.tab.c ${parser_yy}
+          COMMAND ${CMAKE_COMMAND} -E copy_if_different y.tab.h ${parser_ly}
+          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+          COMMENT "Running bison to generate files parser_yy.c/parser_ly.h"
+        )
+    ELSE()
+        message(WARNING "No bison generator found. Using last-resort version.")
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/last_resort/parser_yy.c
+            ${parser_yy} COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/last_resort/parser_ly.h
+            ${parser_ly} COPYONLY)
+    ENDIF()
+       
+#    execute_process(COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
+#        COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
+#    )
     # For whatever reason: the commands fail if within the same execute_process..
-    execute_process(#COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_BINARY_DIR}/parser_ll.c 
-            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.c
+#    execute_process(#COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#            ${CMAKE_BINARY_DIR}/parser_ll.c 
+#            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.c
         #COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-            ${CMAKE_BINARY_DIR}/y.tab.c 
-            ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.c
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-            ${CMAKE_BINARY_DIR}/y.tab.h
-            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ly.h
-    )
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+#            ${CMAKE_BINARY_DIR}/y.tab.c 
+#            ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.c
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+#            ${CMAKE_BINARY_DIR}/y.tab.h
+#            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ly.h
+#    )
 endif()
 
 SET(SCOTCH_SRC arch.c
@@ -235,7 +273,8 @@ wgraph_part_st.c
 wgraph_part_zr.c
 wgraph_store.c)
 
-add_library(scotch STATIC ${SCOTCH_SRC} library_error.c library_error_exit.c)
+add_library(scotch STATIC ${SCOTCH_SRC} ${parser_yy} ${parser_ll}
+    library_error.c library_error_exit.c)
 set_target_properties(scotch PROPERTIES OUTPUT_NAME scotch-${SCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
     add_dependencies(scotch scotch_header)
