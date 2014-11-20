@@ -10,10 +10,6 @@ target_include_directories(ptesmumps
     $<BUILD_INTERFACE:${SCOTCH_SOURCE_DIR}/include>
     )
 
-install(TARGETS ptesmumps EXPORT scotch-config
-    DESTINATION lib
-    INCLUDES DESTINATION include
-)
 install(TARGETS ptesmumps EXPORT ptscotch-config
     DESTINATION lib
     INCLUDES DESTINATION include
