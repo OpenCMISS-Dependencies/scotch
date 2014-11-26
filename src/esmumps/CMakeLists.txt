@@ -1,5 +1,5 @@
 file(GLOB esmumps_src *.c)
-add_library(esmumps STATIC ${esmumps_src})
+add_library(esmumps ${esmumps_src})
 target_link_libraries(esmumps scotch)
 set_target_properties(esmumps PROPERTIES OUTPUT_NAME esmumps-${SCOTCH_VERSION})
 target_include_directories(esmumps

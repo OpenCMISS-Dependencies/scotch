@@ -143,7 +143,7 @@ vdgraph_store.c
 )
 ADD_PREFIX(../ PTSCOTCH_SRC)
     
-add_library(ptscotch STATIC ${PTSCOTCH_SRC} ../library_error.c ../library_error_exit.c)
+add_library(ptscotch ${PTSCOTCH_SRC} ../library_error.c ../library_error_exit.c)
 set_target_properties(ptscotch PROPERTIES OUTPUT_NAME ptscotch-${PTSCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
     add_dependencies(ptscotch ptscotch_header)

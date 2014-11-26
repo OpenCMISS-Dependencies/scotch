@@ -1,7 +1,7 @@
 SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
 
-add_library(ptesmumps STATIC ${esmumps_src})
+add_library(ptesmumps ${esmumps_src})
 target_link_libraries(ptesmumps ptscotch)
 set_target_properties(ptesmumps PROPERTIES OUTPUT_NAME ptesmumps-${SCOTCH_VERSION})
 target_compile_definitions(ptesmumps PRIVATE SCOTCH_PTSCOTCH)

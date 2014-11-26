@@ -273,7 +273,7 @@ wgraph_part_st.c
 wgraph_part_zr.c
 wgraph_store.c)
 
-add_library(scotch STATIC ${SCOTCH_SRC} ${parser_yy} ${parser_ll}
+add_library(scotch ${SCOTCH_SRC} ${parser_yy} ${parser_ll}
     library_error.c library_error_exit.c)
 set_target_properties(scotch PROPERTIES OUTPUT_NAME scotch-${SCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
