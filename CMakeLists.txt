@@ -6,11 +6,18 @@ option(BUILD_PTSCOTCH "Build PT-Scotch (parallel version)" ON)
 option(USE_ZLIB "Enable use of .gz compression" ON)
 option(USE_BZ2 "Enable use of .bz2 compression" OFF)
 option(USE_LZMA "Enable use of .lzma compression" OFF)
-option(USE_PTHREAD "Use pthread library" ON)
+option(USE_THREADS "Use threading" ON)
 
 include(CMakePackageConfigHelpers)
 
 find_package(MPI REQUIRED)
+if (USE_THREADS)
+    find_package(Threads QUIET)
+    if (NOT Threads_FOUND)
+        message(WARNING "Threading was requested (USE_THREADS=${USE_THREADS}), but package could not be found. Disabling.")
+        SET(USE_THREADS NO)
+    endif()
+endif()
 
 MACRO(ADD_PREFIX prefix rootlist)
   SET(outlist )
@@ -27,13 +34,18 @@ add_definitions(-DCOMMON_RANDOM_FIXED_SEED
     -DSCOTCH_RENAME
     -DSCOTCH_RENAME_PARSER
     #-Drestrict=__restrict
-    #-DSCOTCH_PTHREAD
 )
-if (USE_PTHREAD)
+if (APPLE)
+    add_definitions(-DCOMMON_TIMING_OLD)
+endif()
+if (USE_THREADS)
     # Add the commons pthread definition to all targets.
     # Will only compile scotch with pthread enabled, ptscotch with pthread
     # seems somewhat unstable / error-prone to use (see INSTALL.txt)
     add_definitions(-DCOMMON_PTHREAD)
+    if (APPLE)
+        add_definitions(-DCOMMON_PTHREAD_BARRIER)
+    endif()
 endif()
 SET(COMPRESSION_LIBS )
 if (USE_ZLIB)
