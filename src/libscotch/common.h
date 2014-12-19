@@ -385,10 +385,10 @@ typedef void (* ThreadScanFunc)   (void * const, void * const, void * const, con
 /** The thread group header block. **/
 
 typedef struct ThreadGroupHeader_ {
-#if ((defined COMMON_PTHREAD) || (defined SCOTCH_PTHREAD))
   int                       flagval;              /*+ Thread block flags       +*/
   size_t                    datasiz;              /*+ Size of data array cell  +*/
   int                       thrdnbr;              /*+ Number of threads        +*/
+#if ((defined COMMON_PTHREAD) || (defined SCOTCH_PTHREAD))
   ThreadLaunchStartFunc     stafptr;              /*+ Pointer to start routine +*/
   ThreadLaunchJoinFunc      joifptr;              /*+ Pointer to join routine  +*/
   ThreadBarrier             barrdat;              /*+ Barrier data structure   +*/

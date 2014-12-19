@@ -1,6 +1,8 @@
 project(PTSCOTCH VERSION ${SCOTCH_VERSION} LANGUAGES C)
 
-SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
+if (MPI_C_COMPILER)
+    SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
+endif()
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
 
 if (NEED_HEADER_CREATION)
@@ -161,6 +163,7 @@ if (USE_THREADS)
 endif()
 target_include_directories(ptscotch PRIVATE ..
     PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>
+    ${MPI_C_INCLUDE_PATH}
 )
     
 install(TARGETS ptscotch EXPORT ptscotch-config

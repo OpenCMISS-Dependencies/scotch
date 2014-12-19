@@ -123,9 +123,9 @@ typedef int GraphFlag;                            /*+ Graph property flags +*/
 /*+ The graph parallel context structure. +*/
 
 typedef struct GraphProc_ {
+  int                       procglbnbr;           /*+ Number of processes in communicator      +*/
 #ifdef SCOTCH_PTSCOTCH
   MPI_Comm                  proccomm;             /*+ Communicator used for parallel algorithm +*/
-  int                       procglbnbr;           /*+ Number of processes in communicator      +*/
   int                       proclocnum;           /*+ Rank of process in current communicator  +*/
 #endif /* SCOTCH_PTSCOTCH */
 } GraphProc;
