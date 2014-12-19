@@ -27,13 +27,20 @@ MACRO(ADD_PREFIX prefix rootlist)
   SET(${rootlist} ${outlist})
 ENDMACRO(ADD_PREFIX)
 
-# need either c99 or -Drestrict=__restrict definition
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+if (WIN32)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Qstd=c99")
+    add_definitions(-DCOMMON_WINDOWS 
+        -DHAVE_UINT_T
+        -Drestrict=__restrict
+        -DYY_NO_UNISTD_H
+        -DCOMMON_STUB_FORK)
+else()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+endif()
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
 add_definitions(-DCOMMON_RANDOM_FIXED_SEED 
     -DSCOTCH_RENAME
     -DSCOTCH_RENAME_PARSER
-    #-Drestrict=__restrict
 )
 if (APPLE)
     add_definitions(-DCOMMON_TIMING_OLD)
@@ -42,11 +49,29 @@ if (USE_THREADS)
     # Add the commons pthread definition to all targets.
     # Will only compile scotch with pthread enabled, ptscotch with pthread
     # seems somewhat unstable / error-prone to use (see INSTALL.txt)
-    add_definitions(-DCOMMON_PTHREAD)
+    CHECK_INCLUDE_FILES("pthread.h" COMMON_PTHREAD)
+    if (${COMMON_PTHREAD})
+        add_definitions(-DCOMMON_PTHREAD)
+    else()
+        SET(USE_THREADS NO)
+    endif()
     if (APPLE)
         add_definitions(-DCOMMON_PTHREAD_BARRIER)
     endif()
 endif()
+
+INCLUDE(CheckIncludeFiles)
+SET(SEARCHHEADERS strings malloc stdint)
+foreach(hdr ${SEARCHHEADERS})
+    STRING(TOUPPER ${hdr} HDR)
+    STRING(REPLACE "/" "_" HDR ${HDR})
+    SET(VARNAME "HAVE_${HDR}_H")
+    CHECK_INCLUDE_FILES("${hdr}.h" ${VARNAME})
+    if (${${VARNAME}})
+        add_definitions(-D${VARNAME})
+    endif()
+endforeach()
+
 SET(COMPRESSION_LIBS )
 if (USE_ZLIB)
     FIND_PACKAGE(ZLIB REQUIRED)
@@ -69,6 +94,9 @@ endif()
 set(SCOTCH_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 if (NOT EXISTS ${SCOTCH_INC_DIR}/scotch.h)
     SET(NEED_HEADER_CREATION YES)
+endif()
+if(WIN32)
+    include_directories(${SCOTCH_INC_DIR}/win32)
 endif()
 
 add_subdirectory(src/esmumps)

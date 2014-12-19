@@ -164,7 +164,15 @@
 #include            <malloc.h>                    /* Deprecated, but required on some old systems */
 #endif /* HAVE_MALLOC_H */
 #include            <string.h>
-#include            <strings.h>
+#ifdef HAVE_STRINGS_H
+	#include            <strings.h>
+#else
+	#ifdef COMMON_WINDOWS
+		#define strcasecmp stricmp
+		#define strncasecmp strnicmp
+	#endif
+	//int strcasecmp(const char *s1, const char *s2);
+#endif
 #include            <time.h>                      /* For the effective calls to clock () */
 #include            <limits.h>
 #include            <float.h>
