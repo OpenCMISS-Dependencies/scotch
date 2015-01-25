@@ -15,7 +15,7 @@ if (USE_THREADS)
     find_package(Threads QUIET)
     if (NOT Threads_FOUND)
         message(WARNING "Threading was requested (USE_THREADS=${USE_THREADS}), but package could not be found. Disabling.")
-        SET(USE_THREADS NO)
+        SET(USE_THREADS NO)    
     endif()
 endif()
 
@@ -27,13 +27,16 @@ MACRO(ADD_PREFIX prefix rootlist)
   SET(${rootlist} ${outlist})
 ENDMACRO(ADD_PREFIX)
 
-if (WIN32)
+if (MSVC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Qstd=c99")
     add_definitions(-DCOMMON_WINDOWS 
         -DHAVE_UINT_T
         -Drestrict=__restrict
         -DYY_NO_UNISTD_H
         -DCOMMON_STUB_FORK)
+elseif(MINGW)
+    add_definitions(-DCOMMON_STUB_FORK "-D'pipe(pfds)=_pipe(pfds,1024,0x8000)'")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")    
 else()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 endif()
@@ -95,7 +98,7 @@ set(SCOTCH_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 if (NOT EXISTS ${SCOTCH_INC_DIR}/scotch.h)
     SET(NEED_HEADER_CREATION YES)
 endif()
-if(WIN32)
+if(MSVC)# WIN32
     include_directories(${SCOTCH_INC_DIR}/win32)
 endif()
 
