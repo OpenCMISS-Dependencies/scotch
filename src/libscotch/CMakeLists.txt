@@ -54,23 +54,6 @@ if (NEED_HEADER_CREATION)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/last_resort/parser_ly.h
             ${parser_ly} COPYONLY)
     ENDIF()
-       
-#    execute_process(COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
-#        COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
-#    )
-    # For whatever reason: the commands fail if within the same execute_process..
-#    execute_process(#COMMAND flex -Pscotchyy -oparser_ll.c ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.l
-#        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#            ${CMAKE_BINARY_DIR}/parser_ll.c 
-#            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ll.c
-        #COMMAND bison -pscotchyy -y -b y -d -v ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.y
-#        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-#            ${CMAKE_BINARY_DIR}/y.tab.c 
-#            ${CMAKE_CURRENT_SOURCE_DIR}/parser_yy.c
-#        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-#            ${CMAKE_BINARY_DIR}/y.tab.h
-#            ${CMAKE_CURRENT_SOURCE_DIR}/parser_ly.h
-#    )
 endif()
 
 SET(SCOTCH_SRC arch.c
@@ -273,8 +256,12 @@ wgraph_part_st.c
 wgraph_part_zr.c
 wgraph_store.c)
 
-add_library(scotch ${SCOTCH_SRC} ${parser_yy} ${parser_ll}
-    library_error.c library_error_exit.c)
+SET(ERROR_LIB_SRC library_error.c) 
+if (EXIT_ON_ERROR)
+    SET(ERROR_LIB_SRC library_error_exit.c)
+endif()
+
+add_library(scotch ${SCOTCH_SRC} ${parser_yy} ${parser_ll} ${ERROR_LIB_SRC})
 set_target_properties(scotch PROPERTIES OUTPUT_NAME scotch-${SCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
     add_dependencies(scotch scotch_header)

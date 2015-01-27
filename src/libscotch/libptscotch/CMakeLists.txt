@@ -143,9 +143,15 @@ vdgraph_separate_st.c
 vdgraph_separate_zr.c
 vdgraph_store.c
 )
+# Add one or the other error library
+if (EXIT_ON_ERROR)
+    list(APPEND PTSCOTCH_SRC library_error_exit.c) 
+else()
+    list(APPEND PTSCOTCH_SRC library_error.c)
+endif()
 ADD_PREFIX(../ PTSCOTCH_SRC)
     
-add_library(ptscotch ${PTSCOTCH_SRC} ../library_error.c ../library_error_exit.c)
+add_library(ptscotch ${PTSCOTCH_SRC})
 set_target_properties(ptscotch PROPERTIES OUTPUT_NAME ptscotch-${PTSCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
     add_dependencies(ptscotch ptscotch_header)

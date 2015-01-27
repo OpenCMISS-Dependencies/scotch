@@ -6,6 +6,7 @@ option(BUILD_PTSCOTCH "Build PT-Scotch (parallel version)" ON)
 option(USE_ZLIB "Enable use of .gz compression" ON)
 option(USE_BZ2 "Enable use of .bz2 compression" OFF)
 option(USE_LZMA "Enable use of .lzma compression" OFF)
+option(EXIT_ON_ERROR "Use libscotcherrexit instead of libscotcherr" NO)
 option(USE_THREADS "Use threading" ON)
 
 include(CMakePackageConfigHelpers)
