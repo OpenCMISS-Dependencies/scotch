@@ -293,7 +293,7 @@ install(TARGETS scotch EXPORT ptscotch-config
 )
 install(EXPORT scotch-config DESTINATION ${PACKAGE_CONFIG_DIR})
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/scotch-config-version.cmake COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/scotch-config-version.cmake DESTINATION lib/cmake)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/scotch-config-version.cmake DESTINATION ${PACKAGE_CONFIG_DIR})
 
 if (BUILD_PTSCOTCH)
     add_subdirectory(libptscotch)
