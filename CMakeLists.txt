@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 project(SCOTCH VERSION 6.0.3 LANGUAGES C)
 
 option(BUILD_TESTS "${PROJECT_NAME} - Build tests" ON)
+option(PACKAGE_CONFIG_DIR "Directory for package config files (relative to CMAKE_INSTALL_PREFIX)" "lib/cmake")
 option(BUILD_PTSCOTCH "Build PT-Scotch (parallel version)" ON)
 option(USE_ZLIB "Enable use of .gz compression" ON)
 option(USE_BZ2 "Enable use of .bz2 compression" OFF)

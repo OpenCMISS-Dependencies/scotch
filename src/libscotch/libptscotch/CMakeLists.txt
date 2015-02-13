@@ -175,7 +175,7 @@ target_include_directories(ptscotch PRIVATE ..
 install(TARGETS ptscotch EXPORT ptscotch-config
     DESTINATION lib
     INCLUDES DESTINATION include)
-install(EXPORT ptscotch-config DESTINATION lib/cmake)
+install(EXPORT ptscotch-config DESTINATION ${PACKAGE_CONFIG_DIR})
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-version.cmake
     COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-version.cmake DESTINATION lib/cmake)
