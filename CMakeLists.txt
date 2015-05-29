@@ -37,7 +37,9 @@ if (MSVC)
         -DYY_NO_UNISTD_H
         -DCOMMON_STUB_FORK)
 elseif(MINGW)
-    add_definitions(-DCOMMON_STUB_FORK "-D'pipe(pfds)=_pipe(pfds,1024,0x8000)'")
+    # The extra definition "-D'pipe(pfds)=_pipe(pfds,1024,0x8000)'" is automatically defined in src/libscotch/common.h
+    # if COMMON_WINDOWS is used
+    add_definitions(-DCOMMON_WINDOWS -DCOMMON_STUB_FORK)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")    
 else()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
