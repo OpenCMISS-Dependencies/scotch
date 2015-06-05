@@ -129,7 +129,16 @@ endfunction()
 add_subdirectory(src/esmumps)
 add_subdirectory(src/libscotch)
 add_subdirectory(src/scotch)
-install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
+if (MSVC)
+    install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
+else()
+    install(FILES 
+        include/ptscotch.h
+        include/ptscotchf.h
+        include/scotch.h
+        include/scotchf.h 
+        DESTINATION include)
+endif()
 
 if (BUILD_TESTS)
     enable_testing()
