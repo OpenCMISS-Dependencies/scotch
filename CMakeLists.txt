@@ -106,6 +106,26 @@ if(MSVC)# WIN32
     include_directories(${SCOTCH_INC_DIR}/win32)
 endif()
 
+function(CREATE_DEPENDENCIES_FILE EXPORT_NAME)
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake
+        "include(CMakeFindDependencyMacro)\r\n"
+        "set(_OLD_IMPORT_PREFIX \${_IMPORT_PREFIX})\r\n"
+    )
+    if (USE_ZLIB)
+        file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "find_dependency(ZLIB ${ZLIB_VERSION})\r\n")
+    endif()
+    if (USE_BZ2)
+        file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "find_dependency(BZ2 ${BZ2_VERSION})\r\n")
+    endif()
+    if (USE_LZMA)
+        file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "find_dependency(LZMA ${LZMA_VERSION})\r\n")
+    endif()
+    if (USE_THREADS)
+        file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "find_dependency(Threads)\r\n")
+    endif()
+    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "set(_IMPORT_PREFIX \${_OLD_IMPORT_PREFIX})")
+endfunction()
+
 add_subdirectory(src/esmumps)
 add_subdirectory(src/libscotch)
 add_subdirectory(src/scotch)

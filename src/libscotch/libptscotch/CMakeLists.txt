@@ -178,4 +178,8 @@ install(TARGETS ptscotch EXPORT ptscotch-config
 install(EXPORT ptscotch-config DESTINATION ${PACKAGE_CONFIG_DIR})
 WRITE_BASIC_PACKAGE_VERSION_FILE(${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-version.cmake
     COMPATIBILITY AnyNewerVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-version.cmake DESTINATION ${PACKAGE_CONFIG_DIR})
+CREATE_DEPENDENCIES_FILE(ptscotch-config)
+install(FILES 
+    ${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-version.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/ptscotch-config-dependencies.cmake
+    DESTINATION ${PACKAGE_CONFIG_DIR})
