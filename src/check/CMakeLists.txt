@@ -20,7 +20,10 @@ add_test(NAME test_scotch_graph_color_direct
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)
     
 add_executable(test_scotch_graph_map test_scotch_graph_map.c)
-target_link_libraries(test_scotch_graph_map scotch)
+target_link_libraries(test_scotch_graph_map PRIVATE scotch)
+if (UNIX)
+    target_link_libraries(test_scotch_graph_map PRIVATE m)
+endif()
 add_test(NAME test_scotch_graph_map4x4
     COMMAND test_scotch_graph_map m4x4.grf
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)
