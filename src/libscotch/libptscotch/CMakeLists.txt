@@ -162,10 +162,10 @@ if (UNIX AND NOT APPLE)
     target_link_libraries(ptscotch PRIVATE rt)
 endif()
 if (COMPRESSION_LIBS)
-    target_link_libraries(ptscotch PRIVATE ${COMPRESSION_LIBS})
+    target_link_libraries(ptscotch PUBLIC ${COMPRESSION_LIBS})
 endif()
 if (USE_THREADS)
-    target_link_libraries(ptscotch PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(ptscotch PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 endif()
 target_include_directories(ptscotch PRIVATE ..
     PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>
