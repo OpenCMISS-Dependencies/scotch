@@ -108,7 +108,7 @@ endif()
 function(CREATE_DEPENDENCIES_FILE EXPORT_NAME)
     file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake
         "include(CMakeFindDependencyMacro)\r\n"
-        "set(_OLD_IMPORT_PREFIX \${_IMPORT_PREFIX})\r\n"
+        	"set(${PROJECT_NAME}_IMPORT_PREFIX \${_IMPORT_PREFIX})\r\n"
     )
     if (USE_ZLIB)
         file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "find_dependency(ZLIB ${ZLIB_VERSION})\r\n")
@@ -122,7 +122,7 @@ function(CREATE_DEPENDENCIES_FILE EXPORT_NAME)
     if (USE_THREADS)
         file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "find_dependency(Threads)\r\n")
     endif()
-    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "set(_IMPORT_PREFIX \${_OLD_IMPORT_PREFIX})")
+    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${EXPORT_NAME}-dependencies.cmake "set(_IMPORT_PREFIX \${${PROJECT_NAME}_IMPORT_PREFIX})")
 endfunction()
 
 add_subdirectory(src/esmumps)
