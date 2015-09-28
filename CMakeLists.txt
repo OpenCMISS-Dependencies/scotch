@@ -56,7 +56,8 @@ if (USE_THREADS)
     # Add the commons pthread definition to all targets.
     # Will only compile scotch with pthread enabled, ptscotch with pthread
     # seems somewhat unstable / error-prone to use (see INSTALL.txt)
-    CHECK_INCLUDE_FILES("pthread.h" COMMON_PTHREAD)
+    include(CheckIncludeFile)
+    CHECK_INCLUDE_FILE("pthread.h" COMMON_PTHREAD)
     if (${COMMON_PTHREAD})
         add_definitions(-DCOMMON_PTHREAD)
     else()
