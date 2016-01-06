@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.3)
 project(SCOTCH VERSION 6.0.3 LANGUAGES C)
 
 option(BUILD_TESTS "${PROJECT_NAME} - Build tests" ON)
