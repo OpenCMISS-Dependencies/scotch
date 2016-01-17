@@ -1,10 +1,5 @@
 project(PTSCOTCH VERSION ${SCOTCH_VERSION} LANGUAGES C)
 
-if (MPI_C_COMPILER)
-    SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
-endif()
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
-
 if (NEED_HEADER_CREATION)
     ## ptdummysizes
     add_executable(ptdummysizes ../dummysizes.c)
@@ -167,9 +162,12 @@ endif()
 if (USE_THREADS)
     target_link_libraries(ptscotch PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 endif()
+# Add mpi interface target for non-wrapper cases (see findmpi.cmake)
+if (NOT CMAKE_C_COMPILER STREQUAL MPI_C_COMPILER)
+    target_link_libraries(ptscotch PUBLIC $<BUILD_INTERFACE:mpi>)
+endif()
 target_include_directories(ptscotch PRIVATE ..
     PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>
-    ${MPI_C_INCLUDE_PATH}
 )
     
 install(TARGETS ptscotch EXPORT ptscotch-config

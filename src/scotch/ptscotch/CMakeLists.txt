@@ -1,8 +1,3 @@
-if (MPI_C_COMPILER)
-    SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
-endif()
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
-
 macro(ADD_EXEC_PT NAME)
     add_executable(${NAME} ../${NAME}.c)
     target_link_libraries(${NAME} PRIVATE ptscotch ${MPI_C_LIBRARIES})
