@@ -12,7 +12,9 @@ option(USE_THREADS "Use threading" ON)
 
 include(CMakePackageConfigHelpers)
 
-find_package(MPI REQUIRED)
+if(BUILD_PTSCOTCH)
+    find_package(MPI REQUIRED)
+endif()
 if (USE_THREADS)
     find_package(Threads QUIET)
     if (NOT Threads_FOUND)
@@ -84,12 +86,14 @@ SET(COMPRESSION_LIBS )
 if (USE_ZLIB)
     FIND_PACKAGE(ZLIB ${ZLIB_VERSION} REQUIRED)
     add_definitions(-DCOMMON_FILE_COMPRESS_GZ)
-    LIST(APPEND COMPRESSION_LIBS zlib)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+    LIST(APPEND COMPRESSION_LIBS ${ZLIB_LIBRARIES})
 endif()
 if (USE_BZ2)
     FIND_PACKAGE(BZip2 ${BZIP2_VERSION} REQUIRED)
     add_definitions(-DCOMMON_FILE_COMPRESS_BZ2)
-    LIST(APPEND COMPRESSION_LIBS bz2)
+    include_directories(${BZIP2_INCLUDE_DIR})
+    LIST(APPEND COMPRESSION_LIBS ${BZIP2_LIBRARIES})
 endif()
 if (USE_LZMA)
     FIND_PACKAGE(LZMA REQUIRED)
@@ -133,11 +137,15 @@ if (MSVC)
     install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
 else()
     install(FILES 
-        include/ptscotch.h
-        include/ptscotchf.h
         include/scotch.h
         include/scotchf.h 
         DESTINATION include)
+    if(BUILD_PTSCOTCH)
+        install(FILES 
+            include/ptscotch.h
+            include/ptscotchf.h
+            DESTINATION include)
+    endif(BUILD_PTSCOTCH)
 endif()
 
 if (BUILD_TESTS)
