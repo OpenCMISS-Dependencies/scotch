@@ -5,7 +5,7 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
 
 add_library(ptesmumps ${esmumps_src})
 target_link_libraries(ptesmumps ptscotch)
-set_target_properties(ptesmumps PROPERTIES OUTPUT_NAME ptesmumps-${SCOTCH_VERSION})
+set_target_properties(ptesmumps PROPERTIES SOVERSION ${SCOTCH_VERSION})
 target_compile_definitions(ptesmumps PRIVATE SCOTCH_PTSCOTCH)
 target_include_directories(ptesmumps
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../libscotch>

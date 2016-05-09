@@ -147,7 +147,7 @@ endif()
 ADD_PREFIX(../ PTSCOTCH_SRC)
     
 add_library(ptscotch ${PTSCOTCH_SRC})
-set_target_properties(ptscotch PROPERTIES OUTPUT_NAME ptscotch-${PTSCOTCH_VERSION})
+set_target_properties(ptscotch PROPERTIES SOVERSION ${PTSCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
     add_dependencies(ptscotch ptscotch_header)
 endif()

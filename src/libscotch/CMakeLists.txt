@@ -262,7 +262,7 @@ if (EXIT_ON_ERROR)
 endif()
 
 add_library(scotch ${SCOTCH_SRC} ${parser_yy} ${parser_ll} ${ERROR_LIB_SRC})
-set_target_properties(scotch PROPERTIES OUTPUT_NAME scotch-${SCOTCH_VERSION})
+set_target_properties(scotch PROPERTIES SOVERSION ${SCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
     add_dependencies(scotch scotch_header)
 endif()
