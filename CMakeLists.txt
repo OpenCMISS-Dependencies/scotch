@@ -14,6 +14,7 @@ include(CMakePackageConfigHelpers)
 
 if(BUILD_PTSCOTCH)
     find_package(MPI REQUIRED)
+    include_directories(${MPI_C_INCLUDE_PATH})
 endif()
 if (USE_THREADS)
     find_package(Threads QUIET)

@@ -1,0 +1,24 @@
+language: c
+
+sudo: false
+
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - ccache
+      - cmake
+      - cmake-data
+      - libopenmpi-dev
+      - openmpi-bin
+
+script:
+  - mkdir build && cd build && cmake .. && make -j2 && ctest && make install DESTDIR=$PWD
+
+cache:
+  - ccache
+  - apt
+
+compiler:
+  - gcc
