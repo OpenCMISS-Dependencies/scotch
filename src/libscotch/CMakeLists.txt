@@ -81,6 +81,7 @@ bgraph_bipart_zr.c
 bgraph_check.c
 bgraph_store.c
 common.c
+common_error.c
 common_file.c
 common_file_compress.c
 common_file_uncompress.c
