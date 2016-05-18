@@ -1,7 +1,7 @@
 file(GLOB esmumps_src *.c)
 add_library(esmumps ${esmumps_src})
 target_link_libraries(esmumps scotch)
-set_target_properties(esmumps PROPERTIES OUTPUT_NAME esmumps-${SCOTCH_VERSION})
+set_target_properties(esmumps PROPERTIES SOVERSION ${SCOTCH_VERSION})
 target_include_directories(esmumps
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../libscotch>
     $<BUILD_INTERFACE:${SCOTCH_SOURCE_DIR}/include>

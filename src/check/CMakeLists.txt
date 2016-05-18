@@ -3,6 +3,14 @@ if (MPI_C_COMPILER)
 endif()
 
 # Scotch tests
+add_executable(test_common_random test_common_random.c)
+target_link_libraries(test_common_random scotch)
+#add_test(test_common_random test_common_random)
+add_test(NAME test_common_random
+    COMMAND test_common_random /tmp/rand.dat 0)
+add_test(NAME test_common_random_1
+    COMMAND test_common_random /tmp/rand.dat 1)
+
 if (USE_THREADS)
     add_executable(test_common_thread test_common_thread.c)
     target_link_libraries(test_common_thread scotch)
@@ -12,6 +20,21 @@ endif()
 add_executable(test_strat_seq test_strat_seq.c)
 target_link_libraries(test_strat_seq scotch)
 add_test(test_strat_seq test_strat_seq)
+
+add_executable(test_scotch_graph_coarsen test_scotch_graph_coarsen.c)
+target_link_libraries(test_scotch_graph_coarsen scotch)
+add_test(NAME test_scotch_graph_coarsen
+    COMMAND test_scotch_graph_coarsen bump_b1.grf
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)
+
+add_executable(test_scotch_graph_coarsen_build test_scotch_graph_coarsen_build.c)
+target_link_libraries(test_scotch_graph_coarsen_build scotch)
+add_test(NAME test_scotch_graph_coarsen_build
+    COMMAND test_scotch_graph_coarsen_build bump.grf
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)
+add_test(NAME test_scotch_graph_coarsen_build_b1
+    COMMAND test_scotch_graph_coarsen_build bump_b1.grf
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)
 
 add_executable(test_scotch_graph_color test_scotch_graph_color.c)
 target_link_libraries(test_scotch_graph_color scotch)
@@ -37,6 +60,12 @@ add_test(NAME test_scotch_graph_map16x16_b1
     COMMAND test_scotch_graph_map m16x16_b1.grf
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)   
     
+add_executable(test_scotch_graph_map_copy test_scotch_graph_map_copy.c)
+target_link_libraries(test_scotch_graph_map_copy scotch)
+add_test(NAME test_scotch_graph_map_copy
+    COMMAND test_scotch_graph_map_copy bump_b1.grf
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data)
+
 add_executable(test_scotch_graph_order test_scotch_graph_order.c)
 target_link_libraries(test_scotch_graph_order scotch)
 add_test(NAME test_scotch_graph_order

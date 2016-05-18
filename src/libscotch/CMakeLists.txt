@@ -81,6 +81,7 @@ bgraph_bipart_zr.c
 bgraph_check.c
 bgraph_store.c
 common.c
+common_error.c
 common_file.c
 common_file_compress.c
 common_file_uncompress.c
@@ -256,15 +257,24 @@ wgraph_part_st.c
 wgraph_part_zr.c
 wgraph_store.c)
 
-SET(ERROR_LIB_SRC library_error.c) 
+add_library(scotcherr library_error.c)
+install(TARGETS scotcherr EXPORT scotch-config DESTINATION lib)
+target_include_directories(scotcherr PRIVATE .  PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}> )
+add_library(scotcherrexit library_error_exit.c)
+install(TARGETS scotcherrexit EXPORT scotch-config DESTINATION lib)
+target_include_directories(scotcherrexit PRIVATE .  PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}> )
+
+SET(ERROR_LIB scotcherr) 
 if (EXIT_ON_ERROR)
-    SET(ERROR_LIB_SRC library_error_exit.c)
+    SET(ERROR_LIB scotcherrexit)
 endif()
 
-add_library(scotch ${SCOTCH_SRC} ${parser_yy} ${parser_ll} ${ERROR_LIB_SRC})
-set_target_properties(scotch PROPERTIES OUTPUT_NAME scotch-${SCOTCH_VERSION})
+add_library(scotch ${SCOTCH_SRC} ${parser_yy} ${parser_ll})
+set_target_properties(scotch PROPERTIES SOVERSION ${SCOTCH_VERSION})
 if (NEED_HEADER_CREATION)
     add_dependencies(scotch scotch_header)
+    add_dependencies(scotcherr scotch_header)
+    add_dependencies(scotcherrexit scotch_header)
 endif()
 if (UNIX)
     target_link_libraries(scotch PRIVATE m)
@@ -279,6 +289,7 @@ if (USE_THREADS)
     target_link_libraries(scotch PUBLIC ${CMAKE_THREAD_LIBS_INIT})
     target_compile_definitions(scotch PRIVATE SCOTCH_PTHREAD)
 endif()
+target_link_libraries(scotch PUBLIC ${ERROR_LIB})
 target_include_directories(scotch PRIVATE .
     PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>
 )
