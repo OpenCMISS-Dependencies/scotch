@@ -19,7 +19,7 @@ if (NEED_HEADER_CREATION)
         COMMAND ${CMAKE_COMMAND} -E copy ptscotchf.h ${SCOTCH_INC_DIR})    
 endif()
 
-SET(PTSCOTCH_SRC bdgraph.c
+set(PTSCOTCH_SRC bdgraph.c
 bdgraph_bipart_bd.c
 bdgraph_bipart_df.c
 bdgraph_bipart_ex.c
@@ -152,7 +152,7 @@ if (NEED_HEADER_CREATION)
     add_dependencies(ptscotch ptscotch_header)
 endif()
 target_compile_definitions(ptscotch PRIVATE SCOTCH_PTSCOTCH)
-target_link_libraries(ptscotch PUBLIC scotch ${MPI_C_LIBRARIES})
+target_link_libraries(ptscotch PUBLIC scotch mpi-c)
 if (UNIX AND NOT APPLE)
     target_link_libraries(ptscotch PRIVATE rt)
 endif()
@@ -161,10 +161,6 @@ if (COMPRESSION_LIBS)
 endif()
 if (USE_THREADS)
     target_link_libraries(ptscotch PUBLIC ${CMAKE_THREAD_LIBS_INIT})
-endif()
-# Add mpi interface target for non-wrapper cases (see findmpi.cmake)
-if (NOT CMAKE_C_COMPILER STREQUAL MPI_C_COMPILER)
-    target_link_libraries(ptscotch PUBLIC $<BUILD_INTERFACE:mpi>)
 endif()
 target_include_directories(ptscotch PRIVATE ..
     PUBLIC $<BUILD_INTERFACE:${SCOTCH_INC_DIR}>

@@ -1,6 +1,3 @@
-if (MPI_C_COMPILER)
-    SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
-endif()
 
 # Scotch tests
 if (USE_THREADS)

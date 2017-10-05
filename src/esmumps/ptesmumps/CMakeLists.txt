@@ -1,7 +1,3 @@
-if (MPI_C_COMPILER)
-    SET(CMAKE_C_COMPILER ${MPI_C_COMPILER})
-endif()
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
 
 add_library(ptesmumps ${esmumps_src})
 target_link_libraries(ptesmumps ptscotch)
